@@ -2,19 +2,19 @@ from lxml import etree
 
 try:
 #    xml = open("iTunesMusicLibrary.xml");
-    xml = open("testing.xml");
+    xml = open("iTunesMusicLibrary.xml");
     tree = etree.parse(xml);
 except IOError as e:
     print "I/O error({0}): {1}".format(e.errno, e.strerror);
 
 tree = etree._ElementTree.getroot(tree);
-print etree.tostring(tree[0]);
+#print etree.tostring(tree[0]);
 
 tracksxml = tree[0][-3];  #there's probably a better way to parse
 playlistsxml = tree[0][-1]; #but since it's always <key/><value/> this will always work
 
 print '--------------';
-print etree.tostring(playlistsxml);
+#print etree.tostring(playlistsxml);
 print '--------------';
 tracks = {};
 for i in xrange(1,len(tracksxml), 2):
@@ -51,21 +51,21 @@ print len(playlistsxml);
 
 
 playlists = {};
-for i in playlistsxml:
+for i in xrange(0,len(playlistsxml)):
     playlist = playlistsxml[i];
-    playlistno = playlist[3];
+    playlistno = playlist[3].text;
     playlists[playlistno] = {};
-    for x in playlistsxml[i]:
-        val = playlistsxml[i][x+1];
+    for x in xrange(0,len(playlistsxml[i]) - 1):
+        val = playlistsxml[i][x+1].text;
         if playlistsxml[i][x].text == "Name":
             playlists[playlistno]['name'] = val;
         elif playlistsxml[i][x].text == "Smart Info":
             playlists[playlistno]['smart']=True;
         elif playlistsxml[i][x].text == "Playlist Items":
             tracklist = [];
-            for z in playlistsxml:
-                tracklist.append(playlistsxml[z][1]);
+            for z in xrange(0,len(playlistsxml[i][x+1])):
+                tracklist.append(playlistsxml[i][x+1][z][1].text);
             playlists[playlistno]['tracks'] = tracklist;
 
 print playlists;
-print playlistsxml;
+#print playlistsxml;
