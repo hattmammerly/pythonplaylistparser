@@ -1,0 +1,6 @@
+#EXTM3U
+
+<!--TRACK-->
+#EXTINF:%length, %artist - %name
+%location
+<!--END-->
