@@ -19,6 +19,7 @@ full list of things that can be added:
 - %trackskip\_count : I guess itunes saves the number of times you skip it
 - %trackpurchased : if the track was purchased in itunes
 - %tracklocation : absolute location of file on the system
+
 maybe I'll add something into the parser thing to let you put playlist metadata in there
 
 next: play with sorting. stuff like 'artists with fewer than five songs'
