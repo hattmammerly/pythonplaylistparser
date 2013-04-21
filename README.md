@@ -1,7 +1,9 @@
 still haven't learned markdown
 
-currently takes tracks from the itunes db and puts em in a dictionary of classes
-takes playlists and does the same thing
+things are functions now.
+- openlibrary(loc) opens the xml file at a specified location, returning the xml
+- processlibrary(xml) returns a library object containing tracks and playlists
+- convertplaylist(key,form) converts playlist with id 'key' to the format form from the templates folder
 
 playlist template files can be read to convert an itunes playlist to that format
 take a look at templates/m3u for what an example looks like
@@ -24,4 +26,4 @@ maybe I'll add something into the parser thing to let you put playlist metadata 
 
 next: play with sorting. stuff like 'artists with fewer than five songs'
 
-then maybe some ncurses action
+then maybe some urwid action (but apparently latest versions haven't been pushed to any repositories so the tutorials don't really work)
