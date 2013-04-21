@@ -3,28 +3,71 @@ import time
 
 class Library:
     __slots__ = ('name','tracks','playlists');
+    def listplaylists(self):
+        s = 'Playlists:';
+        for k,p in self.playlists.iteritems():
+            s = s + '\n{0}: {1}'.format(k,p.name);
+        return s;
     def tostring(self):
         string = 'Tracks:';
         for t in self.tracks.itervalues():
-#        for t,value in self.tracks:
             string = string + '\n\t{0}'.format(t.tostring());
         string = string + '\n\nPlaylists:';
         for p in self.playlists.itervalues():
-#        for p,value in self.playlists:
             string = string + '\n\t{0}'.format(p.tostring());
     def playlisttostring(self, key):
         s = '{0}:'.format(self.playlists[key].name);
         for t in self.playlists[key].tracks:
             s = s + '\n\t{0}'.format(self.tracks[t].tostring());
         return s;
-
+    def gettrackswithattribute(self, attr, val):
+        if attr == 'album':
+            return self.gettracksonalbum(val);
+        ret = [];
+        for t in self.tracks.itervalues():
+            try:
+                if getattr(t,attr) == val:
+                    ret.append(t);
+            except AttributeError as e:
+                pass;
+        return ret; # return, for example, list of tracks by artist Norah Jones
+    def gettracksonalbum(self,val):
+        ret = [];
+        artist = val[0:val.index(': ')];
+        album = val[val.index(': ') + 2:];
+        try:
+            for t in self.tracks.itervalues():
+                if t.artist == artist and t.album == album:
+                    ret.append(t);
+        except AttributeError as e:
+            pass;
+        return ret;
+    def getattributeunderNinstances(self, attr, n):
+        ret = [];
+        vals = {}; # return list of, for example, artists with <n tracks
+        for t in self.tracks.itervalues():
+            try:
+                if attr == 'album':
+                    val = u'{0}: {1}'.format(getattr(t,'artist'), getattr(t,attr));
+                else:
+                    val = getattr(t,attr);
+            except AttributeError as e:
+                val = '';
+            if val in vals:
+                vals[val] = vals[val] + 1;
+            else:
+                vals[val] = 1;
+        for k,v in vals.iteritems():
+            if v <= n:
+                ret.append(k);
+        return ret;
     def __init__(self):
         self.name = 'iTunesMusicLibrary.xml';
         self.tracks = {};
         self.playlists = {};
 
 class Track:
-    __slots__ = ('name','artist','album_artist','genre','length','year','bpm','date_added','bit_rate','play_count','skip_count','purchased','location');
+    __slots__ = ('name','artist','album_artist','album','genre','length','year','bpm','date_added','bit_rate','play_count','skip_count','purchased','location');
     def tostring(self):
         return "{0} - {1}".format(self.artist, self.name);
     def __init__(self):
@@ -40,10 +83,11 @@ class Playlist:
 
 def openlibrary(loc):
     try:
-        xml = open("testing.xml");
+        xml = open(loc);
         tree = etree.parse(xml);
     except IOError as e:
         print "I/O error({0}): {1}".format(e.errno, e.strerror);
+        return;
     return etree._ElementTree.getroot(tree);
 
 def processlibrary(tree):
@@ -62,6 +106,8 @@ def processlibrary(tree):
                 tracks[trackno].artist = val;
             elif tracksxml[i][x].text == "Album Artist":
                 tracks[trackno].album_artist = val;
+            elif tracksxml[i][x].text == "Album":
+                tracks[trackno].album = val;
             elif tracksxml[i][x].text == "Genre":
                 tracks[trackno].genre = val;
             elif tracksxml[i][x].text == "Total Time":
@@ -105,7 +151,7 @@ def processlibrary(tree):
     return lib;
 
 def convertplaylist(key, form):
-    infos = ['name','artist','album_artist','genre','length','year','bpm','date_added','bit_rate','play_count','skip_count','purchased','location'];
+    infos = ['name','artist','album_artist','album','genre','length','year','bpm','date_added','bit_rate','play_count','skip_count','purchased','location'];
     try:
         template = open("templates/{0}".format(form));
     except IOError as e:
