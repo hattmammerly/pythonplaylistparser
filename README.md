@@ -1,16 +1,6 @@
 still haven't learned markdown
 
-things are functions now.
-- openlibrary(loc) opens the xml file at a specified location, returning the xml
-- processlibrary(xml) returns a library object containing tracks and playlists
-- convertplaylist(key,form) converts playlist with id 'key' to the format form from the templates folder
-
-most operations are performed on a library objeict, with these methods:
-- listplaylists() : lists all playlists in key: name form
-- playlisttostring(key) : returns playlist as a string
-- gettrackswithattribute(attr,val) : returns tracks with matching attr/val pair, eg, songs with artist:Norah Jones
-- gettracksonalbum(val) : takes albums as 'Artist: Album' and returns tracklist in your library
-- getattributeunderNinstances(attr, n) : returns, for example, all artists with five or fewer songs
+first off, this requires the latest urwid package. install it with pip since both gentoo and ubuntu have old versions in their repositories.
 
 playlist template files can be read to convert an itunes playlist to that format
 take a look at templates/m3u for what an example looks like
@@ -32,4 +22,6 @@ full list of things that can be added:
 
 maybe I'll add something into the parser thing to let you put playlist metadata in there
 
-maybe later I'll get some urwid action going on (but apparently latest versions haven't been pushed to any repositories so the tutorials don't really work)
+you can interface with it via command line but my code got waaay too messy maybe I'll write out all the functions and what they do later. but basically you just use the file 'themeat.py' if you don't want urwid or whatever, man
+
+v1.0?
