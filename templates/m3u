@@ -1,6 +1,6 @@
 #EXTM3U
 
 <!--TRACK-->
-#EXTINF:%tracklength, %trackartist - %trackname
-%tracklocation
+#EXTINF:%trackTotal Time%, %trackArtist% - %trackName%
+%trackLocation%
 <!--END-->
