@@ -1,6 +1,11 @@
 import plistlib
 
 libID = 5313
+# perhaps instead of assigning a global variable, the default playlistID could
+# be the ID of the 0th playlist of the library passed
+# that way it defaults to the working library's Library, and allows more than one library to be used
+# this may necessitate a rubbish default and a check in the function body though
+
 # FORGET THIS LXML BUSINESS
 # PLISTLIB IS WHERE IT'S AT
 def openLibrary(loc):
@@ -19,7 +24,7 @@ def getTracks(library,trackIDs):
     return ret
 
 def readPlaylist(library, playlistID=libID): # playlistID must be int
-    return getTracks(lib,[('{0}'.format(track['Track ID'])) for track in [plist['Playlist Items'] for plist in lib['Playlists'] if plist['Playlist ID'] == playlistID][0]])
+    return getTracks(library,[('{0}'.format(track['Track ID'])) for track in [plist['Playlist Items'] for plist in library['Playlists'] if plist['Playlist ID'] == playlistID][0]])
     # the comprehension does: [track number as string for every track in [the tracklist of the one playlist matching playlistID]]
 
 def convertPlaylist(library,form,playlistID=libID):
@@ -50,6 +55,10 @@ def convertPlaylist(library,form,playlistID=libID):
     fl.write(output)
     fw.write(output)
 
+def getListofAttr(library,attr,playlistID=libID):
+    return list(set([track[attr] for track in readPlaylist(library,playlistID) if attr in track]))
+    # list(set([])) used to eliminate duplicates heh
+        
 def getTracksWithTrait(library,trait,value,playlistID=libID):
     ret = []
     for track in readPlaylist(library, playlistID):
