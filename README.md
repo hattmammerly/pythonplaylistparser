@@ -1,6 +1,8 @@
-still haven't learned markdown
+The rewrite branch at this point is faster, cleaner and simply better; use that instead if you can deal with rough edges.
 
-first off, this requires the latest urwid package. install it with pip since both gentoo and ubuntu have old versions in their repositories.
+This version depends on some particular urwid version and python 2.7, and even with those only works on one of my machines. The rewrite works with python 3 (3.3.2?), uses plistlib over lxml which greatly improves speed, and isn't too embarassing to link to on a resume.
+
+this requires the latest urwid package. install it with pip since both gentoo and ubuntu have old versions in their repositories.
 
 playlist template files can be read to convert an itunes playlist to that format
 take a look at templates/m3u for what an example looks like
