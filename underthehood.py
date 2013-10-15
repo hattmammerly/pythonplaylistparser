@@ -1,11 +1,5 @@
 import plistlib
 
-libID = 5313
-# perhaps instead of assigning a global variable, the default playlistID could
-# be the ID of the 0th playlist of the library passed
-# that way it defaults to the working library's Library, and allows more than one library to be used
-# this may necessitate a rubbish default and a check in the function body though
-
 # FORGET THIS LXML BUSINESS
 # PLISTLIB IS WHERE IT'S AT
 def openLibrary(loc):
@@ -14,7 +8,6 @@ def openLibrary(loc):
     except IOError as e:
         print ("I/O error({}): {}".format(e.errno, e.strerror))
         return
-    globals()['libID'] = lib['Playlists'][0]['Playlist ID'] # this is problematic with more than one library file...
     return lib
 
 def getTracks(library,trackIDs):
@@ -23,11 +16,15 @@ def getTracks(library,trackIDs):
         ret.append(library['Tracks'][ID])
     return ret
 
-def readPlaylist(library, playlistID=libID): # playlistID must be int
+def readPlaylist(library, playlistID=None): # playlistID must be int
+    if playlistID == None:
+        playlistID = library["Playlists"][0]["Playlist ID"]
     return getTracks(library,[('{0}'.format(track['Track ID'])) for track in [plist['Playlist Items'] for plist in library['Playlists'] if plist['Playlist ID'] == playlistID][0]])
     # the comprehension does: [track number as string for every track in [the tracklist of the one playlist matching playlistID]]
 
-def convertPlaylist(library,form,playlistID=libID):
+def convertPlaylist(library,form,playlistID=None):
+    if playlistID == None:
+        playlistID = library["Playlists"][0]["Playlist ID"]
     try:
         template = open('templates/{0}'.format(form))
     except IOError as e:
@@ -55,11 +52,15 @@ def convertPlaylist(library,form,playlistID=libID):
     fl.write(output)
     fw.write(output)
 
-def getListofAttr(library,attr,playlistID=libID):
+def getListofAttr(library,attr,playlistID=None):
+    if playlistID == None:
+        playlistID = library["Playlists"][0]["Playlist ID"]
     return list(set([track[attr] for track in readPlaylist(library,playlistID) if attr in track]))
     # list(set([])) used to eliminate duplicates heh
         
-def getTracksWithTrait(library,trait,value,playlistID=libID):
+def getTracksWithTrait(library,trait,value,playlistID=None): # this might be cleaned with a list comprehension | getTracks
+    if playlistID == None:
+        playlistID = library["Playlists"][0]["Playlist ID"]
     ret = []
     for track in readPlaylist(library, playlistID):
         #print (track)
@@ -70,7 +71,9 @@ def getTracksWithTrait(library,trait,value,playlistID=libID):
             pass
     return ret
 
-def getAttrUnderN(library, attr, n,playlistID=libID):
+def getAttrUnderN(library, attr, n, playlistID=None):
+    if playlistID == None:
+        playlistID = library["Playlists"][0]["Playlist ID"]
     attrs = {}
     ret = []
     for track in readPlaylist(library, playlistID):
