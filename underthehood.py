@@ -1,4 +1,5 @@
 import plistlib
+import itertools
 
 # FORGET THIS LXML BUSINESS
 # PLISTLIB IS WHERE IT'S AT
@@ -57,7 +58,7 @@ def getListofAttr(library,attr,playlistID=None):
         playlistID = library["Playlists"][0]["Playlist ID"]
     return list(set([track[attr] for track in readPlaylist(library,playlistID) if attr in track]))
     # list(set([])) used to eliminate duplicates heh
-        
+
 def getTracksWithTrait(library,trait,value,playlistID=None): # this might be cleaned with a list comprehension | getTracks
     if playlistID == None:
         playlistID = library["Playlists"][0]["Playlist ID"]
@@ -88,3 +89,6 @@ def getAttrUnderN(library, attr, n, playlistID=None):
         if value <= n:
             ret.append(key)
     return ret
+
+def unionPlaylist(library, playlists):
+    return [dict(t) for t in set([tuple(d.items()) for d in list(itertools.chain.from_iterable([readPlaylist(library, id) for id in playlists]))])]

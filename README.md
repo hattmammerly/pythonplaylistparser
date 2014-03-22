@@ -50,6 +50,9 @@ for instance, getTracksWithTrait(library,'Artist','Norah Jones') will get all No
 #### getAttrUnderN(library, attr, n, playlistID=libID):
 For instance, getAttrUnderN(library, 'Artist', 5) will return a list of artists with 5 or fewer songs in the library
 
+#### unionPlaylist(library, playlists):
+returns a list of tracks found in any of playlists with IDs in the playlists arg. Duplicate elements removed.
+
 I wrote this script for myself on my dual-booting system. My Windows user and Linux users share the same name and path to the music library, so I run the following command to make a playlist 'sample' usable on Linux.
 
 ```sed -i 's/file:\/\/localhost\/C:\/Users\//\/home\//' sample.m3u && sed -i 's/%20/ /g' sample.m3u && sed -i 's/%5B/[/g' sample.m3u && sed -i 's/%5D/]/g' sample.m3u```
