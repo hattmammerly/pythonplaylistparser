@@ -1,5 +1,6 @@
 import plistlib
 import itertools
+import functools
 
 # FORGET THIS LXML BUSINESS
 # PLISTLIB IS WHERE IT'S AT
@@ -92,3 +93,8 @@ def getAttrUnderN(library, attr, n, playlistID=None):
 
 def unionPlaylist(library, playlists):
     return [dict(t) for t in set([tuple(d.items()) for d in list(itertools.chain.from_iterable([readPlaylist(library, id) for id in playlists]))])]
+
+def intersectPlaylist(library, playlists):
+    def intersectTwo(p1, p2):
+        return [track for track in p1 if track in p2]
+    return functools.reduce(intersectTwo, [playlist["Playlist Items"] for playlist in library["Playlists"] if playlist["Playlist ID"] in playlists] )

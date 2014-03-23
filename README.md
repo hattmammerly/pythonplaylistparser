@@ -53,7 +53,10 @@ For instance, getAttrUnderN(library, 'Artist', 5) will return a list of artists 
 #### unionPlaylist(library, playlists):
 returns a list of tracks found in any of playlists with IDs in the playlists arg. Duplicate elements removed.
 
-I wrote this script for myself on my dual-booting system. My Windows user and Linux users share the same name and path to the music library, so I run the following command to make a playlist 'sample' usable on Linux.
+#### intersectPlaylist(library, playlists):
+returns a list of tracks found in all of playlists with IDs in the playlists arg. Duplicate elements aren't removed yet.
+
+I wrote this script for myself on my dual-booting system. Below is a sed command to switch iTunes's Windows filepaths to \*nix paths. Useful for me.
 
 ```sed -i 's/file:\/\/localhost\/C:\/Users\//\/home\//' sample.m3u && sed -i 's/%20/ /g' sample.m3u && sed -i 's/%5B/[/g' sample.m3u && sed -i 's/%5D/]/g' sample.m3u```
 
@@ -61,6 +64,3 @@ Windows users could probably get by with the following (or another utility entir
 
 ```sed -i 's/file:\/\/localhost\//' sample.m3u && sed -i 's/%20/ /g' sample.m3u && sed -i 's/%5B/[/g' sample.m3u && sed -i 's/%5D/]/g' sample.m3ui```
 
-# TODO:
-Extend the CLI wrapper, and then work on an urwid cascading window system again
-Something to note for later: haskell's laziness may actually significantly speed up this program
