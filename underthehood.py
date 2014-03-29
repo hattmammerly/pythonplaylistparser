@@ -96,5 +96,5 @@ def unionPlaylist(library, playlists):
 
 def intersectPlaylist(library, playlists):
     def intersectTwo(p1, p2):
-        return [track for track in p1 if track in p2]
-    return functools.reduce(intersectTwo, [playlist["Playlist Items"] for playlist in library["Playlists"] if playlist["Playlist ID"] in playlists] )
+        return [dict(t) for t in set([tuple(d.items()) for d in [track for track in p1 if track in p2]])]
+    return functools.reduce(intersectTwo, [readPlaylist(library, playlist) for playlist in playlists] )
