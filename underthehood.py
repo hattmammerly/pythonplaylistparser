@@ -1,6 +1,8 @@
 import plistlib
 import itertools
 import functools
+import urllib.parse
+import os
 
 # FORGET THIS LXML BUSINESS
 # PLISTLIB IS WHERE IT'S AT
@@ -47,7 +49,10 @@ def convertPlaylist(library,form,playlistID=None):
         entry = tracktemplate
         for trackinfo in trackinfos:
             try:
-                entry = entry.replace('%track{0}%'.format(trackinfo), '{0}'.format(track[trackinfo]))
+                if type(track[trackinfo]) == str:
+                    entry = entry.replace('%track{0}%'.format(trackinfo), '{0}'.format(urllib.parse.unquote(track[trackinfo])))
+                else:
+                    entry = entry.replace('%track{0}%'.format(trackinfo), '{0}'.format(track[trackinfo]))
             except KeyError as e:
                 pass
         output = output + entry
@@ -98,3 +103,40 @@ def intersectPlaylist(library, playlists):
     def intersectTwo(p1, p2):
         return [dict(t) for t in set([tuple(d.items()) for d in [track for track in p1 if track in p2]])]
     return functools.reduce(intersectTwo, [readPlaylist(library, playlist) for playlist in playlists] )
+
+# takes library and list of playlist ids - subtracts from first playlist all following playlists
+def differencePlaylist(library, playlists):
+    if len(playlists) <= 1:
+        return readPlaylist(library, playlists[0])
+
+def correctPath(string):
+    loc, f = os.path.split(string)
+    loc, album = os.path.split(loc)
+    loc, artist = os.path.split(loc)
+    target = ""
+    good = False
+    for d in [x for x in os.listdir(loc) if os.path.isdir(os.path.join(loc, target, x))]:
+        if d.lower() == artist.lower():
+            target += artist + "/"
+            good = True
+            break
+    if not good: # how do i want to deal with failure
+        return "FAILURE"
+    good = False
+    for d in [x for x in os.listdir(os.path.join(loc, target)) if os.path.isdir(os.path.join(loc, target, x))]:
+        if d.lower() == album.lower():
+            target += album + "/"
+            good = True
+            break
+    if not good: # how do i want to deal with failure
+        return "FAILURE"
+    good = False
+    for d in [x for x in os.listdir(os.path.join(loc, target)) if os.path.isfile(os.path.join(loc, target, x))]:
+        if d.lower() == f.lower():
+            target += f + "/"
+            good = True
+            break
+    if not good: # how do i want to deal with failure
+        return "FAILURE"
+    good = False
+    return (loc + target)
