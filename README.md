@@ -56,11 +56,6 @@ returns a list of tracks found in any of playlists with IDs in the playlists arg
 #### intersectPlaylist(library, playlists):
 returns a list of tracks found in all of playlists with IDs in the playlists arg. Duplicate elements aren't removed yet.
 
-I wrote this script for myself on my dual-booting system. Below is a sed command to switch iTunes's Windows filepaths to \*nix paths. Useful for me.
-
-```sed -i 's/file:\/\/localhost\/C:\/Users\//\/home\//' sample.m3u && sed -i 's/%20/ /g' sample.m3u && sed -i 's/%5B/[/g' sample.m3u && sed -i 's/%5D/]/g' sample.m3u```
-
-Windows users could probably get by with the following (or another utility entirely).
-
-```sed -i 's/file:\/\/localhost\//' sample.m3u && sed -i 's/%20/ /g' sample.m3u && sed -i 's/%5B/[/g' sample.m3u && sed -i 's/%5D/]/g' sample.m3ui```
-
+#### correctPath(location)
+NTFS is case-insensitive - a song with artist abc and another with artist AbC are put into the folder abc, but have case information preserved in the file uri recorded in iTunes's library plist.
+If the case in the uri doesn't match the case of the real directory, windows doesn't really care, but linooks does. This takes a file uri, finds the case-insensitive match iTunes would use, and returns it.

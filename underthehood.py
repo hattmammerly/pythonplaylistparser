@@ -50,7 +50,10 @@ def convertPlaylist(library,form,playlistID=None):
         for trackinfo in trackinfos:
             try:
                 if type(track[trackinfo]) == str:
-                    entry = entry.replace('%track{0}%'.format(trackinfo), '{0}'.format(urllib.parse.unquote(track[trackinfo])))
+                    if trackinfo == "Location":
+                        entry = entry.replace('%track{0}%'.format(trackinfo), '{0}'.format(correctPath(urllib.parse.unquote(track[trackinfo].replace("localhost/C:/Users","/home")))))
+                    else:
+                        entry = entry.replace('%track{0}%'.format(trackinfo), '{0}'.format(urllib.parse.unquote(track[trackinfo])))
                 else:
                     entry = entry.replace('%track{0}%'.format(trackinfo), '{0}'.format(track[trackinfo]))
             except KeyError as e:
@@ -110,6 +113,7 @@ def differencePlaylist(library, playlists):
         return readPlaylist(library, playlists[0])
 
 def correctPath(string):
+    string = string.replace("file://","")
     loc, f = os.path.split(string)
     loc, album = os.path.split(loc)
     loc, artist = os.path.split(loc)
@@ -117,7 +121,7 @@ def correctPath(string):
     good = False
     for d in [x for x in os.listdir(loc) if os.path.isdir(os.path.join(loc, target, x))]:
         if d.lower() == artist.lower():
-            target += artist + "/"
+            target += d + "/"
             good = True
             break
     if not good: # how do i want to deal with failure
@@ -125,7 +129,7 @@ def correctPath(string):
     good = False
     for d in [x for x in os.listdir(os.path.join(loc, target)) if os.path.isdir(os.path.join(loc, target, x))]:
         if d.lower() == album.lower():
-            target += album + "/"
+            target += d + "/"
             good = True
             break
     if not good: # how do i want to deal with failure
@@ -133,10 +137,10 @@ def correctPath(string):
     good = False
     for d in [x for x in os.listdir(os.path.join(loc, target)) if os.path.isfile(os.path.join(loc, target, x))]:
         if d.lower() == f.lower():
-            target += f + "/"
+            target += d
             good = True
             break
     if not good: # how do i want to deal with failure
         return "FAILURE"
     good = False
-    return (loc + target)
+    return ("file://" + loc + "/" + target)
